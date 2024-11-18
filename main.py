@@ -1,6 +1,5 @@
 import yfinance as yahooFinance
 
-
 def getStockValue(symbol, quantity):
     try:
         stock = yahooFinance.Ticker(symbol)
@@ -14,27 +13,30 @@ def getStockValue(symbol, quantity):
         print(f"Exception occurred for {symbol}: {e}")
         return 0
 
-
 def getPortfolioValue(stocks):
     total_value = sum(getStockValue(stock['symbol'], stock['quantity']) for stock in stocks)
     return total_value
 
+def getUserInput():
+    stocks = []
+    while True:
+        symbol = input("Enter stock symbol (or type 'done' to finish): ")
+        if symbol.lower() == 'done':
+            break
+        try:
+            quantity = int(input(f"Enter quantity of shares for {symbol}: "))
+            stocks.append({"symbol": symbol, "quantity": quantity})
+        except ValueError:
+            print("Invalid quantity. Please enter an integer value for quantity.")
+    
+    return stocks
 
-stocks = [
-    {"symbol": "GOGL", "quantity": 3},
-    {"symbol": "MDT", "quantity": 2},
-    {"symbol": "PLTR", "quantity": 5},
-    {"symbol": "ZETA", "quantity": 8},
-    {"symbol": "TTOO", "quantity": 5},
-    {"symbol": "ATCH", "quantity": 14},
-]
-
+stocks = getUserInput()
 portfolio_value = getPortfolioValue(stocks)
 
-print("Portfolio Status:")
+print("\nPortfolio Status:")
 for stock in stocks:
     stock_value = getStockValue(stock['symbol'], stock['quantity'])
-    print(
-        f"Holding {stock['quantity']} shares of {stock['symbol']}, Total value: {stock_value}")
+    print(f"Holding {stock['quantity']} shares of {stock['symbol']}, Total value: {stock_value:.2f}")
 
-print(f"Total portfolio value: {portfolio_value}")
+print(f"\nTotal portfolio value: {portfolio_value:.2f}")
